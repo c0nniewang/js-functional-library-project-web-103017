@@ -76,20 +76,66 @@ fi = (function() {
       }
       return finalOutput;
     },
-    flatten: function(){
+    flatten: function(array, shallow){
+      let output = [];
 
+      for (let i of array) {
+        if (typeof i === 'object') {
+          let x = fi.flatten(i)
+          output = output.concat(x)
+        } else {
+          output.push(i);
+        }
+      } 
+      return output;
     },
-    uniq: function(){
+    uniq: function(array, isSorted, iteratee){
+      let newarr = [];
+      let output = [];
 
+      const helper = function(i) {
+        if (typeof iteratee !== 'undefined') {
+          return iteratee(i);
+        } else {
+          return i;
+        }
+      }
+
+      if (isSorted === true) {
+        for (let i of array) {
+          if (newarr.last !== helper(i)) {
+            newarr.push(helper(i));
+            output.push(i);
+          }
+        }
+      } else {for (let i of array) {
+        if (!newarr.includes(helper(i))) {
+          newarr.push(helper(i));
+          output.push(i);
+        }
+      }
+    }
+    return output;
     },
-    keys: function(){
 
+    keys: function(object){
+      let output = []
+      for (i in object) {
+        output.push(i);
+      }
+      return output;
     },
     values: function(){
-
+      let output = []
+      for (i in object) {
+        output.push(object[i])
+      }
+      return output;
     },
-    functions: function(){
+    functions: function(object){
 
     }
   }
 })()
+
+fi.flatten([1, [2], [3, [[4]]]])
